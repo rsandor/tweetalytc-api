@@ -12,7 +12,7 @@ class UserController < ApplicationController
   def followers
     screen_name_regex = Regexp.new('^[a-zA-Z\d]+$')
     number_regex = Regexp.new('^\d+$');
-    engine = TweetalytcEngine::Engine.new
+    engine = Tweetalytc::Engine.new
       
     begin
       unless screen_name_regex.match(params[:id])
@@ -27,7 +27,7 @@ class UserController < ApplicationController
       
       if !params[:metric]
         params[:metric] = 'statuses'
-      elsif !TweetalytcEngine::Engine::VALID_METRICS.include? params[:metric]
+      elsif !Tweetalytc::Engine::VALID_METRICS.include? params[:metric]
         raise Exception.new("Invalid metric")
       end
       
@@ -37,19 +37,29 @@ class UserController < ApplicationController
         raise Exception.new("Invalid ordering")
       end
       
-      if !params[:max]
-        params[:max] = '10'
-      elsif !number_regex.match(params[:max])
+      if !params[:limit]
+        params[:limit] = '10'
+      elsif !number_regex.match(params[:limit])
         raise Exception.new("Maximum must be a positive integer")
-      elsif params[:max].to_i < 1 or params[:max].to_i > 100
+      elsif params[:limit].to_i < 1 or params[:limit].to_i > 100
         raise Exception.new("Maximum must be between 1 and 100 inclusive")
       end
         
       @users = engine.getFollowers params[:id], 
         params[:metric],
-        params[:max].to_i,
+        params[:limit].to_i,
         params[:order],
         params[:cat]
+      
+      @query = {
+        :user => {
+          :screen_name => params[:id]
+        },
+        :category => params[:cat],
+        :order => params[:order],
+        :metric => params[:metric],
+        :limit => params[:limit]
+      }
         
     rescue Exception
       # TODO Handle the exceptions more elegantly

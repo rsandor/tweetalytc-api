@@ -93,37 +93,37 @@ class UserControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "followers should fail with non-numeric max parameter" do
+  test "followers should fail with non-numeric limit parameter" do
     get :followers, {
       :id => 'rsandor',
-      :max => 'five', 
+      :limit => 'five', 
       :format => "xml"
     }
     assert_redirected_to '/500.html'
   end
   
-  test "followers should fail with max parameter less than 1" do
+  test "followers should fail with limit parameter less than 1" do
     get :followers, {
       :id => 'rsandor',
-      :max => '-42', 
+      :limit => '-42', 
       :format => "xml"
     }
     assert_redirected_to '/500.html'
   end
   
-  test "followers should fail with max parameter greater than 100" do
+  test "followers should fail with limit parameter greater than 100" do
     get :followers, {
       :id => 'rsandor',
-      :max => '142', 
+      :limit => '142', 
       :format => "xml"
     }
     assert_redirected_to '/500.html'
   end
   
-  test "followers should succeed with max parameter between 1 and 100" do
+  test "followers should succeed with limit parameter between 1 and 100" do
     get :followers, {
       :id => 'rsandor',
-      :max => '5', 
+      :limit => '5', 
       :format => "xml"
     }
     assert_response :success
@@ -135,5 +135,13 @@ class UserControllerTest < ActionController::TestCase
       :format => "xml"
     }
     assert assigns(:users)
+  end
+  
+  test "Given a valid request a query information araay should be set in the controller" do
+    get :followers, {
+      :id => 'rsandor',
+      :format => "xml"
+    }
+    assert assigns(:query)
   end
 end

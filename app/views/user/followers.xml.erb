@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tweetalytc>
+	<version>0.1a</version>
+	<service>user/followers</service>
+	<query>
+		<user>
+			<screen_name><%= @query[:user][:screen_name] %></screen_name>
+		</user>
+		<category><%= @query[:category] %></category>
+		<order><%= @query[:order] %></order>
+		<metric><%= @query[:metric] %></metric>
+		<limit><%= @query[:limit] %></limit>
+	</query>
+	<result>
+	<% metric = @query[:metric] %>
+	<% @users.each do |user| %>
+		<user>
+			<id><%= user['id'] %></id>
+			<name><%= user['name'] %></name>
+			<screen_name><%= user['screen_name'] %></screen_name>
+			<% if metric == 'statuses' %>
+				<statuses_count><%= user['statuses_count'] %></statuses_count>
+			<% elsif metric == 'followers' %>
+				<followers_count><%= user['followers_count'] %></followers_count>
+			<% elsif metric == 'friends' %>
+				<friends_count><%= user['friends_count'] %></friends_count>
+			<% end %>
+		</user>
+	<% end %>
+	</result>
+</tweetalytc>

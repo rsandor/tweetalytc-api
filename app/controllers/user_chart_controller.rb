@@ -1,0 +1,2 @@
+class UserChartController < ApplicationController
+end

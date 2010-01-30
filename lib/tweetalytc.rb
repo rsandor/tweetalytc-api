@@ -46,7 +46,7 @@ module Tweetalytc
       if !Engine::VALID_CATEGORIES.include? category 
         raise Exception.new('Invalid category: ' + category)
       elsif category == 'top'
-        users = users.reverse
+        users.reverse!
       end
 
       # Cut the set down by the limit
@@ -56,7 +56,7 @@ module Tweetalytc
       if !Engine::VALID_ORDERS.include? order
         raise Exception.new('Invalid category: ' + category)
       elsif (order == 'acs' and category == 'top') or (order == 'desc' and category == 'bottom')
-        users.reverse
+        users.reverse!
       end
 
       # Return the result set
