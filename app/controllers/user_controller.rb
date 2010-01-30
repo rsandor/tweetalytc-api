@@ -9,7 +9,7 @@ class UserController < ApplicationController
     :only => :followers, 
     :redirect_to => '/500.html'
   
-  def followers
+  def _get_users(type)
     screen_name_regex = Regexp.new('^[a-zA-Z\d]+$')
     number_regex = Regexp.new('^\d+$');
     engine = Tweetalytc::Engine.new
@@ -45,11 +45,21 @@ class UserController < ApplicationController
         raise Exception.new("Maximum must be between 1 and 100 inclusive")
       end
         
-      @users = engine.getFollowers params[:id], 
-        params[:metric],
-        params[:limit].to_i,
-        params[:order],
-        params[:cat]
+      if type == 'friends'
+        @users = engine.getFriends params[:id], 
+          params[:metric], 
+          params[:limit].to_i, 
+          params[:order], 
+          params[:cat]
+      elsif type == 'followers'
+        @users = engine.getFollowers params[:id], 
+          params[:metric], 
+          params[:limit].to_i, 
+          params[:order], 
+          params[:cat]
+      else
+        raise Exception.new('Invalid user type')
+      end
       
       @query = {
         :user => {
@@ -66,6 +76,13 @@ class UserController < ApplicationController
       redirect_to('/500.html')
     end
   end
+
+  def followers
+    self._get_users('followers')
+  end
   
-  
+  def friends 
+    engine = Tweetalytc::Engine.new
+    self._get_users('friends')
+  end
 end
